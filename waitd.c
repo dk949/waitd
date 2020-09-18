@@ -9,10 +9,24 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define GOT_NO_INPUT 1
+#define GOT_INPUT 2
+
 int getGlob(glob_t *glob_result) {
     return glob("/dev/input/event[0-9]*", GLOB_ERR | GLOB_NOSORT | GLOB_NOESCAPE, NULL, glob_result);
 }
 
+void waitFunc(int f) {
+    static int which = 0;
+    if (which != f) {
+        which = f;
+        if (f == GOT_INPUT) {
+            puts("Got input");
+        } else {
+            puts("Got no input");
+        }
+    }
+}
 
 int main(int argc, char *argv[]) {
     int *fileDescriptors, ret, i;
@@ -78,9 +92,9 @@ int main(int argc, char *argv[]) {
         if (ret == -1)
             err(EXIT_FAILURE, "select");
         if (ret == 0) {
-            printf("Timeout: start first script\n");
+            waitFunc(GOT_NO_INPUT);
         } else {
-            printf("No timeout: start second script\n");
+            waitFunc(GOT_INPUT);
         }
     }
 
