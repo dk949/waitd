@@ -13,47 +13,59 @@ int getGlob(glob_t *glob_result) {
     return glob("/dev/input/event[0-9]*", GLOB_ERR | GLOB_NOSORT | GLOB_NOESCAPE, NULL, glob_result);
 }
 
+
 int main(int argc, char *argv[]) {
-    int *fds, ret, i;
+    int *fileDescriptors, ret, i;
     glob_t glob_result;
 
-    ret = getGlob(&glob_result);
 
-    if (ret)
+    /* getGlob will return a non 0 value if glob() fails
+     * This will most likely be due to lack of privilege
+     * given to the program*/
+    if (getGlob(&glob_result))
         err(EXIT_FAILURE, "glob");
 
-    /* allocate array for opened file descriptors */
-    fds = malloc(sizeof(*fds) * (glob_result.gl_pathc + 1));
 
-    if (fds == NULL)
+    /* allocate array for opened file descriptors */
+    fileDescriptors = malloc(sizeof(*fileDescriptors) * (glob_result.gl_pathc + 1));
+
+    /* This is very unlikely to happen, but malloc can fail
+     * due to lack of free memory */
+    if (fileDescriptors == NULL)
         err(EXIT_FAILURE, "malloc");
 
     /* open devices */
     for (i = 0; i < glob_result.gl_pathc; i++) {
-        fds[i] = open(glob_result.gl_pathv[i], O_RDONLY | O_NONBLOCK);
-        if (fds[i] == -1)
+        fileDescriptors[i] = open(glob_result.gl_pathv[i], O_RDONLY | O_NONBLOCK);
+        /* open() can fail if the device stopped existing
+         * between being discovered with glob() and being
+         * accessed here */
+        if (fileDescriptors[i] == -1)
             err(EXIT_FAILURE, "open `%s'", glob_result.gl_pathv[i]);
     }
 
-    fds[i] = -1; /* end of array */
+    fileDescriptors[i] = -1; /* end of array */
 
     for (;;) {
         char buf[512];
         struct timeval timeout;
-        fd_set readfds;
+        fd_set readFileDescriptors;
         int nfds = -1;
 
-        FD_ZERO(&readfds);
+        FD_ZERO(&readFileDescriptors);
 
         /* select(2) might alter the fdset, thus freshly set it
            on every iteration */
-        for (i = 0; fds[i] != -1; i++) {
-            FD_SET(fds[i], &readfds);
-            nfds = fds[i] >= nfds ? fds[i] + 1 : nfds;
+        for (i = 0; fileDescriptors[i] != -1; i++) {
+            FD_SET(fileDescriptors[i], &readFileDescriptors);
+            nfds = fileDescriptors[i] >= nfds ? fileDescriptors[i] + 1 : nfds;
 
             /* read everything what's available on this fd */
-            while ((ret = read(fds[i], buf, sizeof(buf))) > 0)
+            while ((ret = read(fileDescriptors[i], buf, sizeof(buf))) > 0)
                 continue; /* read away input */
+
+            /* This is triggered if the read fails for any
+             * reason other then the file not having anymore data */
             if (ret == -1 && errno != EAGAIN)
                 err(EXIT_FAILURE, "read");
         }
@@ -62,7 +74,7 @@ int main(int argc, char *argv[]) {
         timeout.tv_sec = 5; /* FIXME */
         timeout.tv_usec = 0;
 
-        ret = select(nfds, &readfds, NULL, NULL, &timeout);
+        ret = select(nfds, &readFileDescriptors, NULL, NULL, &timeout);
         if (ret == -1)
             err(EXIT_FAILURE, "select");
         if (ret == 0) {
@@ -72,5 +84,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    free(fileDescriptors);
     return 0;
 }
