@@ -12,7 +12,7 @@ TARGET = waitd
 all: $(TARGET)
 
 $(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c args.h args.c
 
 clean:
 	$(RM) $(TARGET)

@@ -1,2 +1,4 @@
 waitd
 tags
+*.out
+Session.vim

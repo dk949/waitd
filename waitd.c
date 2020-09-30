@@ -1,16 +1,21 @@
+#include "args.h"
+
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <glob.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/select.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #define GOT_NO_INPUT 1
 #define GOT_INPUT 2
+
+void getFiles(const glob_t *const glob_result, int *fileDescriptors);
+void getGlob(glob_t *glob_result);
+void mainLoop(int *fileDescriptors, float time);
+void waitFunc(int f);
+
 
 void waitFunc(int f) {
     static int which = 0;
@@ -55,7 +60,7 @@ void getFiles(const glob_t *const glob_result, int *fileDescriptors) {
 }
 
 void mainLoop(int *fileDescriptors, float time) {
-    int ret;
+    long int ret;
     for (;;) {
         char buf[512];
         struct timeval timeout;
@@ -81,7 +86,7 @@ void mainLoop(int *fileDescriptors, float time) {
         }
 
         /* same for timeout, 5 seconds here */
-        timeout.tv_sec = (int)time; /* FIXME */
+        timeout.tv_sec = (int)time;
         timeout.tv_usec = (int)(time * 1000) - (int)time * 1000;
 
         ret = select(nfds, &readFileDescriptors, NULL, NULL, &timeout);
@@ -95,8 +100,24 @@ void mainLoop(int *fileDescriptors, float time) {
     }
 }
 
+int main(int argc, char **argv) {
+    char *execOnWait = NULL;
+    char *execOnResume = NULL;
 
-int main(int argc, char *argv[]) {
+    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume);
+    switch (ret) {
+        case 1:
+            err(EXIT_FAILURE, "Flag requires an argument");
+            break;
+        case 2:
+            err(EXIT_FAILURE, "Cannot access event devices");
+            break;
+        case 3:
+            exit(0);
+            break;
+    }
+
+
     int *fileDescriptors;
     glob_t glob_result;
     getGlob(&glob_result);

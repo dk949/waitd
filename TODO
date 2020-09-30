@@ -10,6 +10,6 @@ Interface:
         Until what time to do it.
 
     Implementation:
-        -e EXECUTABLE or --exec-on-wait=EXECUTABLE
-        -E EXECUTABLE or --exec-on-resume=EXECUTABLE
+        -e EXECUTABLE or --exec-on-wait EXECUTABLE
+        -E EXECUTABLE or --exec-on-resume EXECUTABLE
         -h or --help
