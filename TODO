@@ -1,15 +1,3 @@
-Interface:
-    General idea:
-        Being bale to supply the name of the program/script to be executed when no input has been received.
-        Or the program to be executed when the input has finally been received.
-        Or both.
-        A help and/or usage message.
-    Nice to have:
-        How long to do it for
-        How many times to do it
-        Until what time to do it.
-
-    Implementation:
-        -e EXECUTABLE or --exec-on-wait EXECUTABLE
-        -E EXECUTABLE or --exec-on-resume EXECUTABLE
-        -h or --help
+New objective:
+    Get The program to execute actual scripts.
+    Make sure it is safe
