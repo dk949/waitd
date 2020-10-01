@@ -103,8 +103,9 @@ void mainLoop(int *fileDescriptors, float time) {
 int main(int argc, char **argv) {
     char *execOnWait = NULL;
     char *execOnResume = NULL;
+    int wait = 0;
 
-    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume);
+    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume, &wait);
     switch (ret) {
         case 1:
             err(EXIT_FAILURE, "Flag requires an argument");
@@ -114,6 +115,9 @@ int main(int argc, char **argv) {
             break;
         case 3:
             exit(0);
+            break;
+        case 4:
+            err(EXIT_FAILURE, "-w or --wait option required to set the timeout");
             break;
     }
 
@@ -126,6 +130,6 @@ int main(int argc, char **argv) {
     fileDescriptors = malloc(sizeof(*fileDescriptors) * (glob_result.gl_pathc + 1));
     getFiles(&glob_result, fileDescriptors);
 
-    mainLoop(fileDescriptors, 5);
+    mainLoop(fileDescriptors, wait);
     return 0;
 }
