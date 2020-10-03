@@ -1,30 +1,32 @@
 #include "args.h"
+#include "command.h"
 
 #include <err.h>
+#include <stdio.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>
 #include <glob.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #define GOT_NO_INPUT 1
 #define GOT_INPUT 2
 
-void getFiles(const glob_t *const glob_result, int *fileDescriptors);
+void getFiles(const glob_t *glob_result, int *fileDescriptors);
 void getGlob(glob_t *glob_result);
-void mainLoop(int *fileDescriptors, float time);
-void waitFunc(int f);
+void mainLoop(int *fileDescriptors, int time, char *execOnWait, char *execOnResume);
+void waitFunc(int f, char *execOnWait, char *execOnResume);
 
 
-void waitFunc(int f) {
+void waitFunc(int f, char *execOnWait, char *execOnResume) {
     static int which = 0;
     if (which != f) {
         which = f;
         if (f == GOT_INPUT) {
-            puts("Got input");
+            execCommand(execOnResume);
         } else {
-            puts("Got no input");
+            execCommand(execOnWait);
         }
     }
 }
@@ -59,7 +61,7 @@ void getFiles(const glob_t *const glob_result, int *fileDescriptors) {
     fileDescriptors[i] = -1; /* end of array */
 }
 
-void mainLoop(int *fileDescriptors, float time) {
+void mainLoop(int *fileDescriptors, int time, char *execOnWait, char *execOnResume) {
     long int ret;
     for (;;) {
         char buf[512];
@@ -86,16 +88,15 @@ void mainLoop(int *fileDescriptors, float time) {
         }
 
         /* same for timeout, 5 seconds here */
-        timeout.tv_sec = (int)time;
-        timeout.tv_usec = (int)(time * 1000) - (int)time * 1000;
+        timeout.tv_sec = time;
 
         ret = select(nfds, &readFileDescriptors, NULL, NULL, &timeout);
         if (ret == -1)
             err(EXIT_FAILURE, "select");
         if (ret == 0) {
-            waitFunc(GOT_NO_INPUT);
+            waitFunc(GOT_NO_INPUT, execOnWait, execOnResume);
         } else {
-            waitFunc(GOT_INPUT);
+            waitFunc(GOT_INPUT, execOnWait, execOnResume);
         }
     }
 }
@@ -104,21 +105,42 @@ int main(int argc, char **argv) {
     char *execOnWait = NULL;
     char *execOnResume = NULL;
     int wait = 0;
+    int noCheck = 1;
 
-    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume, &wait);
+    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume, &wait, &noCheck);
     switch (ret) {
         case 1:
             err(EXIT_FAILURE, "Flag requires an argument");
-            break;
         case 2:
             err(EXIT_FAILURE, "Cannot access event devices");
-            break;
         case 3:
             exit(0);
-            break;
         case 4:
             err(EXIT_FAILURE, "-w or --wait option required to set the timeout");
+        default:
             break;
+    }
+
+    printf("noCheck = %d\n", noCheck);
+    if (noCheck == 1) {
+        if (checkCommand(execOnWait) != 0) {
+            errno = ENOENT;
+            char buf[128];
+            sliceCommand(execOnWait, buf, strlen(execOnWait), ' ');
+            char command[161];
+            strcpy(command, buf);
+            strcat(command, ": command not found");
+            err(EXIT_FAILURE, command);
+        }
+        if (checkCommand(execOnResume) != 0) {
+            errno = ENOENT;
+            char buf[128];
+            sliceCommand(execOnResume, buf, strlen(execOnResume), ' ');
+            char command[161];
+            strcpy(command, buf);
+            strcat(command, ": command not found");
+            err(EXIT_FAILURE, command);
+        }
     }
 
 
@@ -130,6 +152,6 @@ int main(int argc, char **argv) {
     fileDescriptors = malloc(sizeof(*fileDescriptors) * (glob_result.gl_pathc + 1));
     getFiles(&glob_result, fileDescriptors);
 
-    mainLoop(fileDescriptors, wait);
+    mainLoop(fileDescriptors, wait, execOnWait, execOnResume);
     return 0;
 }
