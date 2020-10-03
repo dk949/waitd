@@ -2,10 +2,12 @@
 CC = gcc
 
 # compiler flags:
-#  -g    adds debugging information to the executable file
+#  -g	adds debugging information to the executable file
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS  = -Wall -O3
 DEBUG_FLAGS  = -Wall -Wpedantic -Wextra -Og
+PREFIX = /usr/local
+
 
 # the build target executable:
 TARGET = waitd
@@ -20,3 +22,10 @@ clean:
 
 debug:
 	$(CC) $(DEBUG_FLAGS) -o $(TARGET) $(TARGET).c args.h args.c command.c command.h
+
+.PHONY: install
+install:
+	install ./waitd ${PREFIX}/bin
+
+uninstall:
+	rm ${PREFIX}/bin/waitd
