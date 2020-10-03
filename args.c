@@ -125,7 +125,7 @@ char *helpMessage =
     "waits for a lack of input and runs a command when no input has been detected for some time"
     "\n"
     "Mandatory arguments to long options are mandatory for short options too.\n"
-    "  -w, --wait TIME              how long to wait for until running the first command\n"
+    "  -w, --wait TIME              how long to wait for until running the first command, in seconds\n"
     "  -e, --exec-on-wait COMMAND   command to be executed after the period of not receiving "
     "input\n"
     "  -E, --exec-on-resume COMMAND command to be executed upon finally receiving input\n"
