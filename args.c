@@ -24,7 +24,7 @@ int getWait(int argc, char **argv, int *wait);
 int getNoCheck(int argc, char **argv, int *noCheck);
 int getHelp(int argc, char **argv);
 
-int parseArgs(int argc, char **argv, char **execOnWait, char **execOnResume, int *wait, int *noCheck) {
+int parseArgs(int argc, char **argv, char **execOnWait, char **execOnResume, int *wait) {
     int ret;
     // This monstrosity needs a rewrite
     if (!getHelp(argc, argv)) {
@@ -63,8 +63,6 @@ int parseArgs(int argc, char **argv, char **execOnWait, char **execOnResume, int
             return 1;
         }
     }
-
-    getNoCheck(argc, argv, noCheck);
 
     return 0;
 }
@@ -120,15 +118,6 @@ int getWait(int argc, char **argv, int *wait) {
     return -1;
 }
 
-int getNoCheck(int argc, char **argv, int *noCheck) {
-    for (int i = 0; i < argc; i++) {
-        if (strcmp(argv[i], NO_CHECK) == 0 || strcmp(argv[i], NO_CHECK_SHORT) == 0) {
-            *noCheck = 0;
-            return 0;
-        }
-    }
-    return -1;
-}
 
 
 char *helpMessage =
@@ -140,7 +129,6 @@ char *helpMessage =
     "  -e, --exec-on-wait COMMAND   command to be executed after the period of not receiving "
     "input\n"
     "  -E, --exec-on-resume COMMAND command to be executed upon finally receiving input\n"
-    "  -n, --no-check               do not check if the command exists\n"
     "\n"
     "  -h, --help     display this help and exit\n"
     "\n"
@@ -148,10 +136,6 @@ char *helpMessage =
     "0  if OK,\n"
     "1  if a simple problem has occurred (permission denied  or option needs arguments\n"
     "2  if command could not be found\n"
-    "\n"
-    "note:\n"
-    "   the --no-check option is only there to run commands not in PATH)\n"
-    "   it does not make the application faster/more efficient (the check is only performed once)\n"
     "\n"
     "contact dkatz488@gmail.com for bug reports\n"
     "man page will be available at some point\n";

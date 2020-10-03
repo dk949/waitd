@@ -2,12 +2,12 @@
 #include "command.h"
 
 #include <err.h>
-#include <stdio.h>
 #include <errno.h>
-#include <stdlib.h>
-#include <string.h>
 #include <fcntl.h>
 #include <glob.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define GOT_NO_INPUT 1
@@ -105,9 +105,8 @@ int main(int argc, char **argv) {
     char *execOnWait = NULL;
     char *execOnResume = NULL;
     int wait = 0;
-    int noCheck = 1;
 
-    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume, &wait, &noCheck);
+    int ret = parseArgs(argc, argv, &execOnWait, &execOnResume, &wait);
     switch (ret) {
         case 1:
             err(EXIT_FAILURE, "Flag requires an argument");
@@ -121,26 +120,23 @@ int main(int argc, char **argv) {
             break;
     }
 
-    printf("noCheck = %d\n", noCheck);
-    if (noCheck == 1) {
-        if (checkCommand(execOnWait) != 0) {
-            errno = ENOENT;
-            char buf[128];
-            sliceCommand(execOnWait, buf, strlen(execOnWait), ' ');
-            char command[161];
-            strcpy(command, buf);
-            strcat(command, ": command not found");
-            err(EXIT_FAILURE, command);
-        }
-        if (checkCommand(execOnResume) != 0) {
-            errno = ENOENT;
-            char buf[128];
-            sliceCommand(execOnResume, buf, strlen(execOnResume), ' ');
-            char command[161];
-            strcpy(command, buf);
-            strcat(command, ": command not found");
-            err(EXIT_FAILURE, command);
-        }
+    if (checkCommand(execOnWait) != 0) {
+        errno = ENOENT;
+        char buf[128];
+        sliceCommand(execOnWait, buf, strlen(execOnWait), ' ');
+        char command[161];
+        strcpy(command, buf);
+        strcat(command, ": command not found");
+        err(EXIT_FAILURE, command);
+    }
+    if (checkCommand(execOnResume) != 0) {
+        errno = ENOENT;
+        char buf[128];
+        sliceCommand(execOnResume, buf, strlen(execOnResume), ' ');
+        char command[161];
+        strcpy(command, buf);
+        strcat(command, ": command not found");
+        err(EXIT_FAILURE, command);
     }
 
 
