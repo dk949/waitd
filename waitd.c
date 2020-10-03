@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
         char command[161];
         strcpy(command, buf);
         strcat(command, ": command not found");
-        err(EXIT_FAILURE, command);
+        err(2, command);
     }
     if (checkCommand(execOnResume) != 0) {
         errno = ENOENT;
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
         char command[161];
         strcpy(command, buf);
         strcat(command, ": command not found");
-        err(EXIT_FAILURE, command);
+        err(2, command);
     }
 
 
