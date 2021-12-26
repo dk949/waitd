@@ -6,16 +6,16 @@
 #include <string.h>
 #include <unistd.h>
 
-#define EXEC_ON_WAIT "--exec-on-wait"
-#define EXEC_ON_WAIT_SHORT "-e"
-#define EXEC_ON_RESUME "--exec-on-resume"
+#define EXEC_ON_WAIT         "--exec-on-wait"
+#define EXEC_ON_WAIT_SHORT   "-e"
+#define EXEC_ON_RESUME       "--exec-on-resume"
 #define EXEC_ON_RESUME_SHORT "-E"
-#define WAIT "--wait"
-#define WAIT_SHORT "-w"
-#define NO_CHECK "--no-check"
-#define NO_CHECK_SHORT "-n"
-#define HELP "--help"
-#define HELP_SHORT "-h"
+#define WAIT                 "--wait"
+#define WAIT_SHORT           "-w"
+#define NO_CHECK             "--no-check"
+#define NO_CHECK_SHORT       "-n"
+#define HELP                 "--help"
+#define HELP_SHORT           "-h"
 
 
 int getExecOnWait(int argc, char **argv, char **execOnWait);
@@ -120,24 +120,23 @@ int getWait(int argc, char **argv, int *wait) {
 
 
 
-char *helpMessage =
-    "Usage: waitd [OPTION]...\n"
-    "waits for a lack of input and runs a command when no input has been detected for some time"
-    "\n"
-    "Mandatory arguments to long options are mandatory for short options too.\n"
-    "  -w, --wait TIME              how long to wait for until running the first command, in seconds\n"
-    "  -e, --exec-on-wait COMMAND   command to be executed after the period of not receiving "
-    "input\n"
-    "  -E, --exec-on-resume COMMAND command to be executed upon finally receiving input\n"
-    "\n"
-    "  -h, --help     display this help and exit\n"
-    "\n"
-    "Exit status:\n"
-    "1  if a simple problem has occurred (permission denied, option needs arguments)\n"
-    "2  if command could not be found\n"
-    "\n"
-    "contact dkatz488@gmail.com for bug reports\n"
-    "man page will be available at some point\n";
+char *helpMessage = "Usage: waitd [OPTION]...\n"
+                    "waits for a lack of input and runs a command when no input has been detected for some time"
+                    "\n"
+                    "Mandatory arguments to long options are mandatory for short options too.\n"
+                    "  -w, --wait TIME              how long to wait for until running the first command, in seconds\n"
+                    "  -e, --exec-on-wait COMMAND   command to be executed after the period of not receiving "
+                    "input\n"
+                    "  -E, --exec-on-resume COMMAND command to be executed upon finally receiving input\n"
+                    "\n"
+                    "  -h, --help     display this help and exit\n"
+                    "\n"
+                    "Exit status:\n"
+                    "1  if a simple problem has occurred (permission denied, option needs arguments)\n"
+                    "2  if command could not be found\n"
+                    "\n"
+                    "contact dkatz488@gmail.com for bug reports\n"
+                    "man page will be available at some point\n";
 
 int getHelp(int argc, char **argv) {
     for (int i = 0; i < argc; i++) {

@@ -31,4 +31,6 @@ int checkCommand(char *commandName) {
 }
 
 
-int execCommand(char *commandName) { return system(commandName); }
+int execCommand(char *commandName) {
+    return system(commandName);
+}

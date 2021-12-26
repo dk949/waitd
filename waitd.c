@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #define GOT_NO_INPUT 1
-#define GOT_INPUT 2
+#define GOT_INPUT    2
 
 void getFiles(const glob_t *glob_result, int *fileDescriptors);
 void getGlob(glob_t *glob_result);
