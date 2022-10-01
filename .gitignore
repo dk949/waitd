@@ -1,5 +1,2 @@
 waitd
-tags
-*.out
-Session.vim
-.idea
+*.o
