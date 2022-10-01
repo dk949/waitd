@@ -1,0 +1,9 @@
+clang
+
+%cpp -std=c++17
+
+
+-O3
+-g
+-Og
+-DVERSION="2.1.0"
