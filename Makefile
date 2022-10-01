@@ -1,31 +1,29 @@
-# Choosing compiler
-CC = gcc
+include config.mk
 
-# compiler flags:
-#  -g	adds debugging information to the executable file
-#  -Wall turns on most, but not all, compiler warnings
-CFLAGS  = -Wall -O3
-DEBUG_FLAGS  = -Wall -Wpedantic -Wextra -Og
-PREFIX = /usr/local
+all: waitd
 
 
-# the build target executable:
-TARGET = waitd
+HDR = util.hpp args.hpp
+SRC = waitd.cpp util.cpp args.cpp
+OBJ = $(SRC:.cpp=.o)
 
-all: $(TARGET)
 
-$(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c args.h args.c command.c command.h
+.cpp.o:
+	$(CXX) $(CFLAGS) $(CPPFLAGS) -c $<
+
+$(OBJ): $(HDR)
+
+waitd: $(OBJ)
+	$(CXX) $(LDFLAGS) $(OBJ) -o $@
+
 
 clean:
-	$(RM) $(TARGET)
+	rm -f $(OBJ) waitd
 
-debug:
-	$(CC) $(DEBUG_FLAGS) -o $(TARGET) $(TARGET).c args.h args.c command.c command.h
-
-.PHONY: install
 install:
-	install ./waitd ${PREFIX}/bin
+	install ./waitd $(PREFIX)/bin
 
 uninstall:
-	rm ${PREFIX}/bin/waitd
+	rm $(PREFIX)/bin/waitd
+
+.PHONY: install uninstall clean
