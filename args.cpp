@@ -22,7 +22,7 @@ Run a command if there has been no input for some time.
 
     -w, --wait TIME                     how long to wait for until running the first command, in seconds
     -e, --exec-on-wait COMMAND          command to be executed after the period of not receiving input
-    -p, --poll-rate TIME                [optional] how long to wai before checking if there has been any input
+    -p, --poll-rate TIME                [optional] how long to wait before checking if there has been any input
 
     -h, --help                          display this message and exit
     -v, --version                       print version and exit
