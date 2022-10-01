@@ -20,7 +20,7 @@ waitd: $(OBJ)
 clean:
 	rm -f $(OBJ) waitd
 
-install:
+install: waitd
 	install ./waitd $(PREFIX)/bin
 
 uninstall:
