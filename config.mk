@@ -1,4 +1,4 @@
-VERSION = 2.1.2
+VERSION = "$(shell git describe)"
 
 DESTDIR ?= /usr
 PREFIX  ?= /usr
