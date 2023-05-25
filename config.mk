@@ -5,12 +5,9 @@ PREFIX  ?= /usr
 
 CXX ?= c++
 
-CPPFLAGS ?=
-CPPFLAGS += -DVERSION=\"$(VERSION)\"
+CPPFLAGS = -DVERSION=\"$(VERSION)\"
 
-CFLAGS ?=
-CFLAGS += -s -Wall -Wextra -Wshadow -Wpedantic -O3
+CFLAGS = -s -Wall -Wextra -Wshadow -Wpedantic -O3
 
 
-LDFLAGS ?=
-LDFLAGS +=-lXss -lX11
+LDFLAGS =-lXss -lX11
