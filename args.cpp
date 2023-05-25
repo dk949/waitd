@@ -36,7 +36,7 @@ man page will be available at some point)";
 }
 
 [[noreturn]] void version() {
-    puts("v" VERSION);
+    puts(VERSION);
     exit(0);
 }
 
