@@ -21,7 +21,8 @@ clean:
 	rm -f $(OBJ) waitd
 
 install: waitd
-	install ./waitd $(DESTDIR)$(PREFIX)/bin
+	mkdir $(DESTDIR)$(PREFIX)/bin
+	install ./waitd $(DESTDIR)$(PREFIX)/bin/waitd
 
 uninstall:
 	rm $(PREFIX)/bin/waitd
