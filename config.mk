@@ -1,15 +1,16 @@
-VERSION = 2.1.0
+VERSION = 2.1.1
 
-PREFIX := /usr
+DESTDIR ?= /usr
+PREFIX  ?= /usr
 
-CXX := c++
+CXX ?= c++
 
-CPPFLAGS :=
+CPPFLAGS ?=
 CPPFLAGS += -DVERSION=\"$(VERSION)\"
 
-CFLAGS :=
+CFLAGS ?=
 CFLAGS += -s -Wall -Wextra -Wshadow -Wpedantic -O3
 
 
-LDFLAGS :=
+LDFLAGS ?=
 LDFLAGS +=-lXss -lX11
