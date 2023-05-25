@@ -40,6 +40,6 @@ int main(int, char **argv) {
     auto const args = Args::parse(argv);
     while (1) {
         c.wait(args.wait * 1000, args.pollRate * 1000);
-        std::system(args.execOnWait);
+        (void)std::system(args.execOnWait);
     }
 }
