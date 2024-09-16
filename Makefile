@@ -3,8 +3,8 @@ include config.mk
 all: waitd
 
 
-HDR = util.hpp args.hpp
-SRC = waitd.cpp util.cpp args.cpp
+HDR = args.hpp
+SRC = waitd.cpp args.cpp
 OBJ = $(SRC:.cpp=.o)
 
 

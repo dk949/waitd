@@ -1,14 +1,23 @@
 #include "args.hpp"
-#include "util.hpp"
 
 #include <X11/extensions/scrnsaver.h>
 #include <X11/Xlib.h>
 
 #include <chrono>
+#include <cstring>
+#include <iostream>
 #include <thread>
 
 namespace chr = std::chrono;
-using namespace std::chrono_literals;
+
+template<typename... Ts>
+[[noreturn]]
+void die(Ts &&...args) {
+    std::cerr << "waitd: ";
+    (std::cerr << ... << args);
+    if (errno) std::cerr << ": " << std::strerror(errno) << '\n';
+    std::terminate();
+}
 
 struct Context {
     Window win;

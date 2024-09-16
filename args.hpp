@@ -6,7 +6,8 @@ struct Args {
     double wait = NAN;
     double pollRate = 2.0;
     char *execOnWait = nullptr;
-    static Args parse(char **argv);
+    [[nodiscard]]
+    static Args parse(char **argv) noexcept;
 };
 
 #endif  // args_h

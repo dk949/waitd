@@ -1,13 +1,12 @@
 #include "args.hpp"
 
-#include "util.hpp"
-
 #include <cstdlib>
 #include <iostream>
 #include <optional>
 #include <string_view>
 
-std::optional<double> toNum(std::string_view sv) {
+[[nodiscard]]
+static std::optional<double> toNum(std::string_view sv) noexcept {
     char *end;
     auto const out = std::strtod(sv.data(), &end);
     if (end != sv.data() + sv.length())
@@ -16,7 +15,7 @@ std::optional<double> toNum(std::string_view sv) {
         return out;
 }
 
-auto helpMessage = R"(Usage: waitd [OPTION]...
+constexpr auto helpMessage = R"(Usage: waitd [OPTION]...
 Run a command if there has been no input for some time.
 
     -w, --wait TIME                     how long to wait for until running the first command, in seconds
@@ -30,26 +29,26 @@ Use https://github.com/dk949/waitd/issues for bug reports
 man page will be available at some point)";
 
 [[noreturn]]
-void help() {
+static void help() noexcept {
     puts(helpMessage);
     exit(0);
 }
 
 [[noreturn]]
-void version() {
+static void version() noexcept {
     puts(VERSION);
     exit(0);
 }
 
 template<typename T = void>
 [[noreturn]]
-T failedToParse(char const *msg) {
+static T failedToParse(char const *msg) noexcept {
     fputs(msg, stderr);
     fputc('\n', stderr);
     exit(1);
 }
 
-Args Args::parse(char **argv) {
+Args Args::parse(char **argv) noexcept {
     Args out;
     char **argIt = argv;
     for (char const *a = *(++argIt); *argIt; a = *(++argIt)) {
