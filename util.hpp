@@ -6,11 +6,11 @@
 #include <iostream>
 
 template<typename... Ts>
-[[noreturn]] void die(Ts &&...args) {
+[[noreturn]]
+void die(Ts &&...args) {
     std::cerr << "waitd: ";
     (std::cerr << ... << args);
     if (errno) std::cerr << ": " << std::strerror(errno) << '\n';
-    //exit(1);
     std::terminate();
 }
 

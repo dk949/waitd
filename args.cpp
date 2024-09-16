@@ -2,11 +2,10 @@
 
 #include "util.hpp"
 
-#include <string_view>
-
 #include <cstdlib>
 #include <iostream>
 #include <optional>
+#include <string_view>
 
 std::optional<double> toNum(std::string_view sv) {
     char *end;
@@ -30,18 +29,21 @@ Run a command if there has been no input for some time.
 Use https://github.com/dk949/waitd/issues for bug reports
 man page will be available at some point)";
 
-[[noreturn]] void help() {
+[[noreturn]]
+void help() {
     puts(helpMessage);
     exit(0);
 }
 
-[[noreturn]] void version() {
+[[noreturn]]
+void version() {
     puts(VERSION);
     exit(0);
 }
 
 template<typename T = void>
-[[noreturn]] T failedToParse(char const *msg) {
+[[noreturn]]
+T failedToParse(char const *msg) {
     fputs(msg, stderr);
     fputc('\n', stderr);
     exit(1);
